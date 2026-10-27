@@ -1,0 +1,7 @@
+import { useEffect, useState } from 'react'
+import { apiFetch } from '../services/api'
+export default function Trades({ lastEvent }) {
+  const [trades, setTrades] = useState([])
+  useEffect(() => { apiFetch('/api/trades').then((response) => response.json()).then((data) => setTrades(data.trades || [])).catch(() => setTrades([])) }, [lastEvent])
+  return <section className="page"><p className="eyebrow">LIVE MT5 POSITIONS</p><h1>Trades</h1><div className="live-summary"><span><b>{trades.length}</b> open positions</span><span>Source: MT5 demo account</span></div><div className="table-wrap"><table><thead><tr><th>Symbol</th><th>Side</th><th>Volume</th><th>Entry</th><th>SL</th><th>TP</th><th>Floating P&amp;L</th></tr></thead><tbody>{trades.map((trade) => <tr key={trade.id}><td>{trade.symbol}</td><td><span className={`side-pill ${trade.side}`}>{trade.side}</span></td><td>{trade.volume}</td><td>{trade.entry}</td><td>{trade.stop_loss}</td><td>{trade.take_profit}</td><td className={Number(trade.pnl) >= 0 ? 'positive' : 'negative'}>{Number(trade.pnl || 0).toFixed(2)}</td></tr>)}</tbody></table>{trades.length === 0 && <p className="empty">No open positions in MT5 right now. Dry-run history is intentionally not shown as live trades.</p>}</div></section>
+}

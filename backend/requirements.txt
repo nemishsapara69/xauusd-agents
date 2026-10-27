@@ -1,0 +1,14 @@
+MetaTrader5
+pandas
+numpy
+pyyaml
+python-dotenv
+requests
+fastapi
+uvicorn[standard]
+websockets
+python-jose[cryptography]
+passlib[bcrypt]
+langgraph
+google-genai
+pytest

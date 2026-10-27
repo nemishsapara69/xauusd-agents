@@ -1,0 +1,8 @@
+import { useEffect, useState } from 'react'
+import { apiFetch } from '../services/api'
+export default function Reports({ lastEvent }) {
+  const [report, setReport] = useState(null)
+  const [period, setPeriod] = useState('weekly')
+  useEffect(() => { apiFetch(`/api/reports?period=${period}`).then((response) => response.json()).then(setReport).catch(() => setReport(null)) }, [lastEvent, period])
+  return <section className="page"><div className="page-heading"><div><p className="eyebrow">PERFORMANCE / MT5</p><h1>Reports</h1></div><div className="report-switch"><button className={period === 'daily' ? 'active' : ''} onClick={() => setPeriod('daily')} type="button">Daily</button><button className={period === 'weekly' ? 'active' : ''} onClick={() => setPeriod('weekly')} type="button">Weekly</button></div></div>{report ? <><div className="report-grid"><div className="report-metric"><span>P&amp;L</span><strong className={Number(report.pnl) >= 0 ? 'positive' : 'negative'}>${Number(report.pnl || 0).toFixed(2)}</strong></div><div className="report-metric"><span>Win rate</span><strong>{Number(report.win_rate || 0).toFixed(1)}%</strong></div><div className="report-metric"><span>Drawdown</span><strong>${Number(report.drawdown || 0).toFixed(2)}</strong></div><div className="report-metric"><span>Trades</span><strong>{report.trades || 0}</strong></div></div><div className="dashboard-panel insight-card"><span className="eyebrow">SYSTEM INSIGHT</span><h2>{report.insight || 'Not enough executed trade data yet.'}</h2><p>Reports use recorded execution data. Pending and rejected signals are not counted as completed trades.</p></div></> : <div className="dashboard-panel"><p>Loading report…</p></div>}</section>
+}

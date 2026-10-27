@@ -1,0 +1,8 @@
+symbol: XAUUSD
+default_timeframe: H1
+candle_count: 500
+ema_periods:
+  - 20
+  - 50
+  - 200
+log_level: INFO
