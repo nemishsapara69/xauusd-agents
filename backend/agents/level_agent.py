@@ -37,22 +37,20 @@ def find_signal(
     previous = data.iloc[-2]
     current = data.iloc[-1]
     bullish = trend == "bullish"
-    if pd.isna(previous["ema_20"]) or pd.isna(current["ema_20"]) or pd.isna(current["atr_14"]):
+    if pd.isna(previous["ema_20"]) or pd.isna(previous["ema_50"]) or pd.isna(current["atr_14"]):
         return None
     if bullish:
-        retest = previous["low"] <= previous["ema_20"] and previous["close"] > previous["ema_20"]
-        confirmation = (
-            current["close"] > current["open"]
-            and current["close"] > previous["high"]
-            and current["close"] > current["ema_20"]
+        retest = (
+            min(previous["open"], previous["close"]) <= previous["ema_20"] <= max(previous["open"], previous["close"])
+            or previous["low"] <= previous["ema_50"] <= previous["high"]
         )
+        confirmation = current["close"] > current["open"] and current["close"] > current["ema_20"]
     else:
-        retest = previous["high"] >= previous["ema_20"] and previous["close"] < previous["ema_20"]
-        confirmation = (
-            current["close"] < current["open"]
-            and current["close"] < previous["low"]
-            and current["close"] < current["ema_20"]
+        retest = (
+            min(previous["open"], previous["close"]) <= previous["ema_20"] <= max(previous["open"], previous["close"])
+            or previous["low"] <= previous["ema_50"] <= previous["high"]
         )
+        confirmation = current["close"] < current["open"] and current["close"] < current["ema_20"]
     touched = bool(retest)
     if not touched or not confirmation:
         return None

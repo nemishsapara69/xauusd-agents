@@ -70,7 +70,7 @@ function App() {
     <div className="app-shell">
       <Navbar wsStatus={status} />
       <main>{content}</main>
-      <footer>Demo-live execution · Automatic trade execution · <button onClick={() => { sessionStorage.removeItem('xauusd_token'); setAuthenticated(false) }} type="button">Sign out</button></footer>
+      <footer>Automatic trade execution · <button onClick={() => { sessionStorage.removeItem('xauusd_token'); setAuthenticated(false) }} type="button">Sign out</button></footer>
     </div>
   )
 }

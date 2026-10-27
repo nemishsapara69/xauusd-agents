@@ -34,6 +34,7 @@ class Orchestrator:
             pip_size=float(rules.get("pip_size", 0.01)),
         ))
         self.reporting = ReportingAgent(self.database)
+        self._last_executed_signal_time: str | None = None
 
     async def run(
         self,
@@ -71,6 +72,13 @@ class Orchestrator:
             )
         await self.bus.publish({"type": "agent_step", "agent": "risk", "payload": decision})
         if signal and decision["approved"]:
+            signal_time = str(signal.get("time", ""))
+            if signal_time and signal_time == self._last_executed_signal_time:
+                decision = {"approved": False, "reason": "duplicate_signal"}
+                result = {"status": "not_executed"}
+                await self.bus.publish({"type": "agent_step", "agent": "risk", "payload": decision})
+                await self.bus.publish({"type": "agent_step", "agent": "reporting", "payload": result})
+                return {"news": news, "trend": trend, "signal": signal, "decision": decision, "result": result}
             if load_config().execution_enabled:
                 config = load_config()
                 client = MT5Client(config)
@@ -85,10 +93,12 @@ class Orchestrator:
                             "status": "executed",
                             "result": client.place_market_order(signal, float(decision["lot_size"])),
                         }
+                        self._last_executed_signal_time = signal_time
                 finally:
-                    client.close()
+                        client.close()
             else:
                 result = self.risk.place_order(signal, decision)
+                self._last_executed_signal_time = signal_time
             self.reporting.record(signal, {**decision, **result}, {})
         else:
             result = {"status": "not_executed"}

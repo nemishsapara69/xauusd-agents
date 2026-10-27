@@ -136,6 +136,8 @@ async def _market_data_loop() -> None:
             if client is not None:
                 client.close()
                 client = None
+            await asyncio.sleep(5)
+            continue
         await asyncio.sleep(1)
 
 

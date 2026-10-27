@@ -50,7 +50,7 @@ export default function Dashboard({ lastEvent }) {
       <div className="stat-card"><span>Win rate</span><strong>{Number(stats.win_rate || 0).toFixed(1)}%</strong></div>
       <div className="stat-card"><span>Open trades</span><strong>{stats.open_trades || 0}</strong></div>
     </div>
-    <div className="dashboard-panel"><h2>System status <span className={`connection-status ${stats.account_status || 'unavailable'}`}>{stats.account_status === 'connected' ? 'MT5 connected' : 'MT5 unavailable'}</span></h2><p>{stats.account_server ? `Account ${stats.account_server} is supplying live balance and equity. ` : 'MT5 account data is currently unavailable. '}{stats.execution_enabled ? 'Demo-live execution is enabled.' : 'Dry-run execution is active.'}</p></div>
+    <div className="dashboard-panel"><h2>System status <span className={`connection-status ${stats.account_status || 'unavailable'}`}>{stats.account_status === 'connected' ? 'MT5 connected' : 'MT5 unavailable'}</span></h2><p>{stats.account_server ? `Account ${stats.account_server} is supplying live balance and equity. ` : 'MT5 account data is currently unavailable. '}{stats.execution_enabled ? 'Automatic execution is enabled.' : 'Dry-run execution is active.'}</p></div>
     <div className="dashboard-panel live-analysis"><h2>Live analysis feed <span>updates every second</span></h2><p>{agentActivity ? `Trend: ${agentActivity.payload?.result?.trend || 'no_trade'} · M15: ${agentActivity.payload?.result?.m15 || '—'} · H1: ${agentActivity.payload?.result?.h1 || '—'} · ${agentActivity.payload?.signal ? `Signal: ${agentActivity.payload.signal.side}` : 'No entry signal'}` : 'Waiting for live market analysis.'}</p></div>
   </section>
 }
