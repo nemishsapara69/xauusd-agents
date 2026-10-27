@@ -76,10 +76,15 @@ class Orchestrator:
                 client = MT5Client(config)
                 try:
                     client.connect()
-                    result = {
-                        "status": "executed",
-                        "result": client.place_market_order(signal, float(decision["lot_size"])),
-                    }
+                    current_positions = client.get_positions(signal["symbol"])
+                    if len(current_positions) >= min(self.risk.limits.max_open_positions, 10):
+                        decision = {"approved": False, "reason": "max_open_positions"}
+                        result = {"status": "not_executed"}
+                    else:
+                        result = {
+                            "status": "executed",
+                            "result": client.place_market_order(signal, float(decision["lot_size"])),
+                        }
                 finally:
                     client.close()
             else:

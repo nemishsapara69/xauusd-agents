@@ -75,13 +75,14 @@ def update_risk_rules(rules: RiskRules) -> dict:
         raise HTTPException(status_code=400, detail="Risk amounts must be positive")
     if (
         rules.max_open_positions < 1
+        or rules.max_open_positions > 10
         or rules.max_spread_points <= 0
         or rules.min_risk_reward <= 0
         or rules.stop_loss_pips <= 0
         or rules.max_take_profit_pips <= 0
         or rules.pip_size <= 0
     ):
-        raise HTTPException(status_code=400, detail="Position and spread limits are invalid")
+        raise HTTPException(status_code=400, detail="Position limit must be between 1 and 10; other limits are invalid")
     values = rules.dict() if hasattr(rules, "dict") else rules.model_dump()
     (CONFIG_DIR / "risk_rules.yaml").write_text(
         yaml.safe_dump(values, sort_keys=False), encoding="utf-8"

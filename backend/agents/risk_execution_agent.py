@@ -46,7 +46,7 @@ class RiskExecutionAgent:
         max_stop = self.limits.stop_loss_pips * self.limits.pip_size
         if daily_loss_usd >= self.limits.max_daily_loss_usd:
             return {"approved": False, "reason": "daily_loss_limit"}
-        if open_positions >= self.limits.max_open_positions:
+        if open_positions >= min(self.limits.max_open_positions, 10):
             return {"approved": False, "reason": "max_open_positions"}
         if spread_points > self.limits.max_spread_points:
             return {"approved": False, "reason": "spread_limit"}
